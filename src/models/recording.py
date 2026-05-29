@@ -39,9 +39,12 @@ class Recording(db.Model):
     processing_time_seconds = db.Column(db.Integer, nullable=True)
     transcription_duration_seconds = db.Column(db.Integer, nullable=True)  # Time taken for transcription
     summarization_duration_seconds = db.Column(db.Integer, nullable=True)  # Time taken for summarization
-    processing_source = db.Column(db.String(50), default='upload')  # upload, auto_process, recording
+    processing_source = db.Column(db.String(50), default='upload')  # upload, auto_process, recording, youtube
     error_message = db.Column(db.Text, nullable=True)  # Store detailed error messages
     file_hash = db.Column(db.String(64), nullable=True)  # SHA-256 hash for duplicate detection
+
+    # Source URL for recordings imported from external sources (e.g. YouTube)
+    source_url = db.Column(db.String(500), nullable=True)
 
     # Auto-deletion and archival fields
     audio_deleted_at = db.Column(db.DateTime, nullable=True)  # When audio file was deleted (null = not deleted)
@@ -292,7 +295,8 @@ class Recording(db.Model):
             'prompt_variables': self.prompt_variables or {},
             'duplicate_info': self.get_duplicate_info(),
             'shared_with_count': shared_with_count,
-            'public_share_count': public_share_count
+            'public_share_count': public_share_count,
+            'source_url': self.source_url,
         }
 
         # Only compute expensive HTML conversions when explicitly requested
