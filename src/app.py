@@ -124,7 +124,7 @@ else:
 if USERS_CAN_DELETE:
     print("ℹ️  User deletion: Enabled (all users can delete their recordings)")
 else:
-    print("🔒 User deletion: Restricted (only admins can delete recordings)")
+    print("\U0001f512 User deletion: Restricted (only admins can delete recordings)")
 
 # Log internal sharing status
 if ENABLE_INTERNAL_SHARING:
@@ -137,7 +137,7 @@ else:
 if ENABLE_PUBLIC_SHARING:
     print("✅ Public sharing: Enabled (users can create public share links)")
 else:
-    print("🔒 Public sharing: Disabled (public share links are not allowed)")
+    print("\U0001f512 Public sharing: Disabled (public share links are not allowed)")
 
 # Log video retention status
 if VIDEO_RETENTION:
@@ -576,6 +576,7 @@ from src.api.events import events_bp, init_events_helpers
 from src.api.system import system_bp, init_system_helpers
 from src.api.push_notifications import push_bp
 from src.api.api_v1 import api_v1_bp, init_api_v1_helpers
+from src.api.youtube import youtube_bp
 
 # Database initialization (extracted to src/init_db.py)
 from src.init_db import initialize_database
@@ -620,7 +621,9 @@ app.register_blueprint(events_bp)
 app.register_blueprint(system_bp)
 app.register_blueprint(push_bp)
 app.register_blueprint(api_v1_bp)
+app.register_blueprint(youtube_bp)
 csrf.exempt(api_v1_bp)  # API v1 uses token auth, not CSRF
+csrf.exempt(youtube_bp)  # YouTube import uses JSON; token auth covers CSRF
 
 # File monitor and scheduler initialization functions below
 
